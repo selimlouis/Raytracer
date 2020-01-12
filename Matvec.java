@@ -14,21 +14,39 @@ public class Matvec{
         }
     }
 
-    public double dot(double[] b){
+    public double dot(Matvec b){
         double product = 0; 
       
         // Loop for calculate cot product 
         for (int i = 0; i < 3; i++) 
-            product = product + this.xyz[i] * b[i]; 
+            product = product + this.xyz[i] * b.xyz[i]; 
         return product;
     }
 
-    public double[] cross(double[] b){
+    public Matvec cross(Matvec b){
         double[] cross_P = {0,0,0};
-        cross_P[0] = this.xyz[1] * b[2]  - this.xyz[2] * b[1]; 
-        cross_P[1] = this.xyz[0] * b[2]  - this.xyz[2] * b[0]; 
-        cross_P[2] = this.xyz[0] * b[1]  - this.xyz[1] * b[0]; 
-        return cross_P;
+        cross_P[0] = this.xyz[1] * b.xyz[2]  - this.xyz[2] * b.xyz[1]; 
+        cross_P[1] = this.xyz[0] * b.xyz[2]  - this.xyz[2] * b.xyz[0]; 
+        cross_P[2] = this.xyz[0] * b.xyz[1]  - this.xyz[1] * b.xyz[0]; 
+        return new Matvec(cross_P);
+    }
+
+    public void add(Matvec b){
+        for(int i = 0; i < 3; i++){
+            this.xyz[i] += b.xyz[i];
+        }
+    }
+
+    public void sub(Matvec b){
+        for(int i = 0; i < 3; i++){
+            this.xyz[i] -= b.xyz[i];
+        }
+    }
+
+    public void mult(double factor){
+        for(int i = 0; i < 3; i++){
+            this.xyz[i] *= factor;
+        }
     }
 
     

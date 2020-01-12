@@ -36,9 +36,11 @@ public class Raytracer{
 
     }
 
-    public void writePng(File png, ArrayList<List<Double>> colors){
-
+    public static void trace(double[] camposition, ArrayList<Sphere> spheres, int width, int height, String name){
+        
     }
+
+    
     public static void main(String[] args){
         System.out.print("Trace the Rays\n");
 
