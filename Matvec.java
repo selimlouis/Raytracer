@@ -9,7 +9,7 @@ public class Matvec{
 
     public void normalize(){
         double length = Math.sqrt(this.xyz[0] * this.xyz[0] + this.xyz[1] * this.xyz[1] + this.xyz[2] * this.xyz[2]);
-        for(int i = 0; i <= 3; i++){
+        for(int i = 0; i < 3; i++){
             this.xyz[i] /= length;
         }
     }
@@ -47,6 +47,39 @@ public class Matvec{
         for(int i = 0; i < 3; i++){
             this.xyz[i] *= factor;
         }
+    }
+
+    public Matvec addreturn(Matvec b){
+        double[] res = {0,0,0};
+        Matvec result = new Matvec(res);
+
+        for(int i = 0; i < 3; i++){
+            result.xyz[i] = this.xyz[i] + b.xyz[i];
+        }
+
+        return result;
+    }
+
+    public Matvec subreturn(Matvec b){
+        double[] res = {0,0,0};
+        Matvec result = new Matvec(res);
+
+        for(int i = 0; i < 3; i++){
+            result.xyz[i] = this.xyz[i] - b.xyz[i];
+        }
+
+        return result;
+    }
+
+    public Matvec multreturn(double factor){
+        double[] res = {0,0,0};
+        Matvec result = new Matvec(res);
+
+        for(int i = 0; i < 3; i++){
+            result.xyz[i] = this.xyz[i] * factor;
+        }
+
+        return result;
     }
 
     

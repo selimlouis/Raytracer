@@ -1,9 +1,9 @@
 public class Ray{
     public Matvec direction;
-    public double magnitude;
+    public Matvec position;
 
-    public Ray(Matvec d, double m){
+    public Ray(Matvec d, Matvec p){
         this.direction = d;
-        this.magnitude = m;
+        this.position = p;
     }
 }
