@@ -20,6 +20,8 @@ public class Raytracer{
         return ray;
     }
 
+    //diffuse shading logic
+
     public static double diffuseColor(Ray surfacenormal, Ray lightray){
         double result = 0;
 
@@ -47,6 +49,32 @@ public class Raytracer{
         Ray result = new Ray(surfaceNormal, hitposition);
         surfaceNormal.normalize();
         return result;
+    }
+
+    // specular shading logic
+
+    public static Ray getCamRay(Matvec camposition, Ray ray, double t){
+        Matvec startposition = ray.direction.multreturn(t);
+        Matvec camdirection = camposition.subreturn(startposition);
+
+        camdirection.normalize();
+        
+
+        Ray camray = new Ray(camdirection, startposition);
+        return camray;
+    }
+
+    public static double limit(double value) {
+        return Math.max(0, Math.min(value, 1));
+    }
+
+    public static double specularValue(Ray lightray, Ray camray, Ray surfacenormal, double power){
+        Matvec specularvec = lightray.direction.addreturn(camray.direction);
+        specularvec.normalize();
+        double specular = specularvec.dot(surfacenormal.direction);
+        specular = Math.pow(specular, power);
+        specular = limit(specular);
+        return specular;
     }
 
     public static double intersect(Ray ray, Matvec pos, double radius){
@@ -92,8 +120,8 @@ public class Raytracer{
         return t;
     }
 
-    public static int[] raySphereIntersection(Ray ray, ArrayList<Sphere> spheres, Matvec lightposition){
-        int[] result = {0,0,0,255};
+    public static int[] raySphereIntersection(Ray ray, ArrayList<Sphere> spheres, Matvec lightposition, Matvec camposition){
+        int[] result = {0,0,0};
         double tmin = 99999999999.0;
         Sphere minSphere = null;
         for(int i = 0; i < spheres.size(); i++){
@@ -109,8 +137,15 @@ public class Raytracer{
                 Ray lightray = getLightRay(lightposition, ray, tmin);
                 Ray surfacenormal = getSurfaceNormal(minSphere, ray, tmin);
                 double diffusevalue = diffuseColor(surfacenormal, lightray);
+                Ray camray = getCamRay(camposition, ray, t);
+                double specularvalue = specularValue(lightray, camray, surfacenormal, 15.0);
                 //the diffuse value determines the alpha value
-                result[3] = (int) (255 * diffusevalue);
+                //result[3] = (int) (255 * diffusevalue);
+
+                for(int k = 0; k < 3; k++){
+                    result[k] = (int) (result[k] * limit(diffusevalue + specularvalue));
+                    //result[k] = (int) (result[k] * specularvalue);
+                }
             }
 
         }
@@ -151,7 +186,7 @@ public class Raytracer{
 
     public static void trace(Matvec camposition, ArrayList<Sphere> spheres, int width, int height, double depth, Matvec lightposition, String name){
         //create buffered image
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         //file object
         File f = null;
@@ -160,14 +195,14 @@ public class Raytracer{
         for(int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
                 Ray ray = shootRay(x, y, width, height, depth, camposition);
-                int[] color = raySphereIntersection(ray, spheres, lightposition);
+                int[] color = raySphereIntersection(ray, spheres, lightposition, camposition);
                 //the color int array adds the alpha value to the last place
-                int a = color[3];
+                //int a = color[3];
                 int r = color[0];
                 int g = color[1];
                 int b = color[2];
                 
-                int rgb = a *(256*256*256) + r*(65536) + g*(256) + b;
+                int rgb = r*(65536) + g*(256) + b;
                 image.setRGB(x, y, rgb);
             }
         }
@@ -193,7 +228,7 @@ public class Raytracer{
         double[] lamp = {5,-5, -1};
         Matvec lampposition = new Matvec(lamp);
         double[] capos = {0,0,1};
-        double[] lisapos = {0,0,-10};
+        double[] lisapos = {3,0,-10};
         int[] gunthercolor = {20,250,0};
         double[] guntherpos = {0,0,-15};
         int[] lisacolor = {100, 0, 100};
