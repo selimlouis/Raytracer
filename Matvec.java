@@ -17,7 +17,7 @@ public class Matvec{
     public double dot(Matvec b){
         double product = 0; 
       
-        // Loop for calculate cot product 
+        // Loop to calculate dot product 
         for (int i = 0; i < 3; i++) 
             product = product + this.xyz[i] * b.xyz[i]; 
         return product;

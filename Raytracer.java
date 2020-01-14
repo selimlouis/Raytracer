@@ -34,6 +34,9 @@ public class Raytracer{
         Matvec startposition = ray.direction.multreturn(t);
         Matvec lightdirection = lightposition.subreturn(startposition);
 
+        lightdirection.normalize();
+        
+
         Ray lightray = new Ray(lightdirection, startposition);
         return lightray;
     }
@@ -42,6 +45,7 @@ public class Raytracer{
         Matvec hitposition = ray.direction.multreturn(t);
         Matvec surfaceNormal = hitposition.subreturn(sphere.position);
         Ray result = new Ray(surfaceNormal, hitposition);
+        surfaceNormal.normalize();
         return result;
     }
 
@@ -186,7 +190,7 @@ public class Raytracer{
 
         //gradient(512, 512, "test");
 
-        double[] lamp = {5,-5, -13};
+        double[] lamp = {5,-5, -1};
         Matvec lampposition = new Matvec(lamp);
         double[] capos = {0,0,1};
         double[] lisapos = {0,0,-10};
